@@ -2,13 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login/login.vue'
 
-const Home = () => import('@/views/home/home.vue')
-const Index = () => import('@/views/index/index.vue')
-const Product = () => import('@/views/product/product.vue')
-const Products = () => import('@/views/products/products.vue')
-const Category = () => import('@/views/categories/categories.vue')
-const Order = () => import('@/views/order/order.vue')
-const Users = () => import('@/views/users/users.vue')
+const Home = () => import(/* webpackChunkName: "home" */ '@/views/home/home.vue')
+const Index = () => import(/* webpackChunkName: "index" */ '@/views/index/index.vue')
+const Product = () => import(/* webpackChunkName: "product" */ '@/views/product/product.vue')
+const Products = () => import(/* webpackChunkName: "products" */ '@/views/products/products.vue')
+const Category = () => import(/* webpackChunkName: "category" */ '@/views/categories/categories.vue')
+const Order = () => import(/* webpackChunkName: "order" */ '@/views/order/order.vue')
+const Users = () => import(/* webpackChunkName: "user" */ '@/views/users/users.vue')
 
 
 Vue.use(Router)
