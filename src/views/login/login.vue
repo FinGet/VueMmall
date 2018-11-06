@@ -36,7 +36,16 @@ export default {
       ).then(response => {
         let res = response.data
         if (res.status == 0) {
+          this.$message({
+            message:'登录成功！',
+            type: 'success'
+          });
           this.$router.push({path:'/home/index'})
+        } else {
+          this.$message({
+            message:res.msg,
+            type: 'error'
+          });
         }
       })
     }

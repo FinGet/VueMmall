@@ -9,6 +9,7 @@
         <el-header>
           <TopBar></TopBar>
         </el-header>
+        <BreadNav></BreadNav>
         <el-main>
           <router-view/>
         </el-main>
@@ -20,11 +21,13 @@
 <script>
 import Aside from '@/components/aside.vue'
 import TopBar from '@/components/topbar.vue'
+import BreadNav from '@/components/breadnav.vue'
 export default {
   name: 'Home',
   components: {
     Aside,
-    TopBar
+    TopBar,
+    BreadNav
   }
 }
 </script>

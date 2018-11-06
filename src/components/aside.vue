@@ -3,9 +3,10 @@
     <el-row class="tac">
 			<el-col :span="24">
 				<el-menu
-					default-active="/home/index"
+					:default-active="$route.path"
 					background-color="rgb(50, 50, 58)"
 					text-color="#fff"
+					router
 					active-text-color="#2DAFCB">
 					<el-menu-item index="/home/index">
 						<i class="fa fa-dashboard"></i>
@@ -16,14 +17,14 @@
 							<i class="fa fa-list"></i>
 							<span class="title">商品</span>
 						</template>
-							<el-menu-item index="2-1">商品管理</el-menu-item>
-							<el-menu-item index="2-2">品类管理</el-menu-item>
+							<el-menu-item index="/home/product/products">商品管理</el-menu-item>
+							<el-menu-item index="/home/product/category">品类管理</el-menu-item>
 					</el-submenu>
-					<el-menu-item index="3">
+					<el-menu-item index="/home/order">
 						<i class="fa fa-check-square-o"></i>
 						<span class="title">订单管理</span>
 					</el-menu-item>
-					<el-menu-item index="1">
+					<el-menu-item index="/home/users">
 						<i class="fa fa-user-o"></i>
 						<span class="title">用户管理</span>
 					</el-menu-item>
