@@ -9,10 +9,38 @@ import 'font-awesome/css/font-awesome.css'
 import '@/assets/reset.scss'
 import '@/assets/common.scss'
 import axios from 'axios'
+import qs from 'qs'
 
 Vue.prototype.$http = axios
+Vue.prototype.$qs = qs
 
 Vue.use(ElementUI)
+
+// http response 拦截器
+axios.interceptors.response.use(
+  response => {
+    if(response.data.status == 10) {
+      router.replace({
+        path: '/',
+        query: {redirect: router.currentRoute.fullPath}
+      })
+      return response;
+    } else {
+      return response;
+    }
+  },
+  error => {
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          router.replace({
+              path: '/',
+              query: {redirect: router.currentRoute.fullPath}
+          })
+      }
+    }
+    return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+  });
 
 /* eslint-disable no-new */
 new Vue({

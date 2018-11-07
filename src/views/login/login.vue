@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import qs from 'qs';
+
 export default {
   name: 'Login',
   data() {
@@ -31,7 +31,7 @@ export default {
         username: this.username,
         password: this.password
       }
-      this.$http.post('/api/manage/user/login.do',qs.stringify(data),
+      this.$http.post('/api/manage/user/login.do',this.$qs.stringify(data),
       {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
       ).then(response => {
         let res = response.data

@@ -6,6 +6,7 @@ a{
 html,body {
   height: 100%;
   width: 100%;
+  background: #f3f3f3;
 }
 ::-webkit-scrollbar{width:0px}
 // element ui
@@ -17,9 +18,59 @@ html,body {
   background: #fff;
   box-shadow: 2px 2px 2px #ddd;
 }
+.el-button--text {
+  width: 45px;
+  color: #606266;
+  :hover{
+    color: #606266;
+  }
+}
+.el-table__header {
+  thead {
+    tr {
+      th{
+        background: #409eff;
+        color: #fff;
+      }
+    }
+  }
+}
+
 
 .page-title{
   font-size: 25px;
   padding-bottom: 9px;
   margin: 10px 0 20px;
+}
+.pagination{
+  margin: 20px 0;
+}
+
+.left{
+  float: left;
+}
+.right{
+  float: right;
+}
+
+.search-box{
+  margin-bottom: 20px;
+}
+.marginL10{
+  margin-left: 10px;
+}
+.marginL20{
+  margin-left: 20px;
+}
+.marginL30{
+  margin-left: 30px;
+}
+.marginR10{
+  margin-right: 10px;
+}
+.marginR20{
+  margin-right: 20px;
+}
+.marginR30{
+  margin-right: 30px;
 }
