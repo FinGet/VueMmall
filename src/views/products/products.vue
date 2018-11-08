@@ -2,7 +2,7 @@
   <div id="product" class="clearfix">
     <div class="page-top clearfix">
       <div class="page-title left">商品管理</div>
-      <el-button type="primary" class="right"><i class="fa fa-plus"></i>添加商品</el-button>
+      <el-button type="primary" @click="handleAdd" class="right"><i class="fa fa-plus"></i>添加商品</el-button>
     </div>
     <div class="search-box">
       <el-row>
@@ -75,40 +75,45 @@
       :page-size="pageSize"
       :total="total">
     </el-pagination>
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" @close="closeDialog">
       <el-form :model="form">
         <el-form-item label="商品名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input class="input300" :disabled="disable" v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="商品描述" :label-width="formLabelWidth">
-          <el-input v-model="form.subtitle" autocomplete="off"></el-input>
+          <el-input class="input300" :disabled="disable" v-model="form.subtitle" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="所属品类" :label-width="formLabelWidth">
-          <el-select v-model="form.categoryId" placeholder="请选择活动区域">
+          <el-select v-model="form.categoryId" :disabled="disable" placeholder="请选择活动区域">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="商品价格" :label-width="formLabelWidth">
-          <el-input placeholder="请输入内容" v-model="form.price">
+          <el-input class="input300" :disabled="disable" placeholder="请输入内容" v-model="form.price">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
         <el-form-item label="商品库存" :label-width="formLabelWidth">
-          <el-input placeholder="请输入内容" v-model="form.stock">
+          <el-input class="input300" :disabled="disable" placeholder="请输入内容" v-model="form.stock">
             <template slot="append">件</template>
           </el-input>
         </el-form-item>
         <el-form-item label="商品图片" :label-width="formLabelWidth">
-          <img v-for="item in form.subImages" :src="item" alt="" :key="item">
+          <img class="img" v-for="item in form.subImages" :src="item.url" v-if="item.uri" alt="" :key="item.uri">
         </el-form-item>
         <el-form-item label="商品详情" :label-width="formLabelWidth">
-          <p v-html="form.detail"></p>
+          <p v-html="form.detail" class="detail" v-if="disable"></p>
+          <quill-editor v-else
+              v-model="form.detail"
+              :options="editorOption"
+              >
+          </quill-editor>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" v-if="!disable" @click="dialogVisible = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -122,7 +127,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      lists: [],
+      lists: [], // 表格数据
       options: [{
           value: 'productId',
           label: '按商品id查询'
@@ -133,9 +138,9 @@ export default {
       selectvalue: 'productId',
       input: '', // 输入框内容
       dialogTitle: '', // 弹窗标题
-      dialogVisible: false,
+      dialogVisible: false, // 弹窗显示/隐藏
       formLabelWidth: '80px',
-      form: {
+      form: { // 表单数据
         name: '',
         subtitle: '',
         categoryId: '',
@@ -143,7 +148,24 @@ export default {
         stock: '',
         subImages: [],
         detail: ''
+      },
+      type: '', // 操作类型
+      editorOption: { // 富文本配置
+        modules: {
+          toolbar:[
+            ['bold', 'italic', 'underline', 'strike'],
+            [{'font':[]}],        // toggled buttons
+            [{ 'header': 1 }, { 'header': 2 }],
+              ['header','blockquote', 'code-block'],
+              ['image']
+          ]
+        }
       }
+    }
+  },
+  computed: {
+    disable() {
+      return this.type == 'detail'
     }
   },
   created() {
@@ -168,6 +190,9 @@ export default {
         }
       })
     },
+    /**
+     * 查看详情
+     */
     getProductDetail(id){
       let _this = this
       this.$http.get('/api/manage/product/detail.do',{
@@ -178,18 +203,21 @@ export default {
         let res = response.data
         if(res.status == 0) {
           let images = res.data.subImages.split(',');
-          res.subImages = images.map((imgUri) => {
+          res.data.subImages = images.map((imgUri) => {
             return {
               uri: imgUri,
               url: res.data.imageHost + imgUri
             }
           });
+          console.log(res.data.subImages)
           // debugger
           for (let key in _this.form) {
             if (_this.form.hasOwnProperty(key) === true) {
               _this.form[key] = res.data[key]
+
             }
           }
+          console.log(this.form)
         }
       })
     },
@@ -198,6 +226,7 @@ export default {
      */
     handleDetail(index,data) {
       this.dialogVisible = true
+      this.type = 'detail'
       this.getProductDetail(data.id)
     },
     /** 
@@ -205,6 +234,13 @@ export default {
      */    
     handleEdit(index,data) {
 
+    },
+    /**
+     * 添加
+     */
+    handleAdd() {
+      this.type = 'add'
+      this.dialogVisible = true
     },
     /**
      * 上下架
@@ -271,6 +307,18 @@ export default {
     changPage(val){
       this.pageNum = val
       this.getProductsLists()
+    },
+    /**
+     * 关闭弹窗
+     */
+    closeDialog() {
+      for (let key in this.form) {
+        if(this.form.hasOwnProperty(key)) {
+          this.form[key] = ''
+        }
+      }
+      this.type = ''
+      console.log(this.form)
     }
   }
 }
@@ -287,5 +335,8 @@ export default {
  .table-container{
    height: 570px;
    overflow: auto;
+ }
+ .detail image,.img {
+   max-width: 100%;
  }
 </style>

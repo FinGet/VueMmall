@@ -10,11 +10,16 @@ import '@/assets/reset.scss'
 import '@/assets/common.scss'
 import axios from 'axios'
 import qs from 'qs'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+Vue.use(ElementUI)
+Vue.use(VueQuillEditor)
 
 Vue.prototype.$http = axios
 Vue.prototype.$qs = qs
-
-Vue.use(ElementUI)
 
 // http response 拦截器
 axios.interceptors.response.use(
