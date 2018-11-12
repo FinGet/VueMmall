@@ -17,6 +17,13 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/fileUpload': {
+        target: 'http://admintest.happymmall.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/fileUpload': ''
+        }
       }
     },
 
