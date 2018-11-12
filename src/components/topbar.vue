@@ -3,7 +3,7 @@
     <el-dropdown @command="handleCommand" class="dropdown">
       <span class="el-dropdown-link">
         <i class="fa fa-user"></i>
-        欢迎，admin
+        欢迎，{{userInfo.username}}
         <i class="el-icon-arrow-down el-icon-caret-bottom"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
@@ -15,6 +15,14 @@
 
 <script>
 export default {
+  data() {
+    return {
+      userInfo:{}
+    }
+  },
+  created() {
+    this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  },
   methods: {
     handleCommand(command) {
       this.$message({
@@ -22,6 +30,7 @@ export default {
         type: 'success'
       });
       this.$router.push({path:'/'})
+      localStorage.removeItem('userInfo')
     }
   }
 }

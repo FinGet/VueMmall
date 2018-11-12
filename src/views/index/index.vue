@@ -27,7 +27,7 @@
           <p class="count">{{orderNum}}</p>
           <p class="desc">
             <i class="fa fa-check-square-o"></i>
-            <span>d订单总数</span>
+            <span>订单总数</span>
           </p>
         </div>
       </el-col>
