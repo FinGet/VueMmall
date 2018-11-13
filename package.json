@@ -12,13 +12,15 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.9",
+    "file-saver": "^2.0.0-rc.4",
     "font-awesome": "^4.7.0",
     "node-sass": "^4.10.0",
     "qs": "^6.5.2",
     "sass-loader": "^7.1.0",
     "vue": "^2.5.2",
     "vue-quill-editor": "^3.0.6",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "xlsx": "^0.14.0"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
