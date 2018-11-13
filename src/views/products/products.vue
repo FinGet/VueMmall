@@ -97,17 +97,21 @@
           </el-select>
         </el-form-item>
         <el-form-item label="商品价格" prop="price">
-          <el-input class="input300" :disabled="disable" placeholder="请输入内容" v-model="form.price">
+          <el-input class="input300" :disabled="disable" placeholder="请输入内容" v-model.number="form.price">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
         <el-form-item label="商品库存" prop="stock">
-          <el-input class="input300" :disabled="disable" placeholder="请输入内容" v-model="form.stock">
+          <el-input class="input300" :disabled="disable" placeholder="请输入内容" v-model.number="form.stock">
             <template slot="append">件</template>
           </el-input>
         </el-form-item>
         <el-form-item label="商品图片" prop="subImages">
-          <img class="img" v-for="item in form.subImages" :src="item.url" v-if="item.uri" alt="" :key="item.uri">
+          <div v-for="(item,index) in form.subImages" :key="item.uri" class="item-img">
+            <img class="img" width="100px" :src="item.url" v-if="item.uri" alt="">
+            <i class="el-icon-circle-close-outline" @click="deleteImg(index)"></i>
+          </div>
+          
           <form enctype="multipart/form-data" ref="imgForm" v-if="!disable">
             <input type="file" @change="chooseImg($event)" name="upload_file" value="imgFile" accept="image/png,image/gif,image/jpeg">
             <button type="submit" @click.prevent.stop="uploadImg">上传</button>
@@ -161,7 +165,8 @@ export default {
         price: '',
         stock: '',
         subImages: [],
-        detail: ''
+        detail: '',
+        id: ''
       },
       type: '', // 操作类型
       editorOption: { // 富文本配置
@@ -178,7 +183,7 @@ export default {
       rules: {
         name: [
           { required: true, message: '请输入商品名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ],
         subtitle: [
           { required: true, message: '请输入商品信息', trigger: 'blur' }
@@ -255,9 +260,9 @@ export default {
           for (let key in _this.form) {
             if (_this.form.hasOwnProperty(key) === true) {
               _this.form[key] = res.data[key]
-
             }
           }
+          _this.form.subImages = _this.form.subImages || []
           this.getCategory(this.form.parentCategoryId)
           console.log(this.form)
         }
@@ -275,7 +280,9 @@ export default {
      * 编辑 
      */    
     handleEdit(index,data) {
-
+      this.dialogVisible = true
+      this.type = 'edit'
+      this.getProductDetail(data.id)
     },
     /**
      * 添加
@@ -354,12 +361,6 @@ export default {
      * 关闭弹窗
      */
     closeDialog() {
-      // 手动清空表单数据
-      // for (let key in this.form) {
-      //   if(this.form.hasOwnProperty(key)) {
-      //     this.form[key] = ''
-      //   }
-      // }
       // 重置表单 && 验证
       this.$refs.ruleForm.resetFields();
       this.type = ''
@@ -401,10 +402,21 @@ export default {
      * 提交 确认
      */
     submitForm() {
-      console.log(this.imgLists)
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          alert('submit!');
+          // alert('submit!');
+          this.form.subImages = this.form.subImages.map((image) => image.uri).join(',')
+          this.$http.get('/api/manage/product/save.do',{
+            params: this.form
+          }).then(response => {
+            let res = response.data
+            if (res.status == 0) {
+              this.$message.success(res.data)
+              this.$refs.ruleForm.resetFields()
+              this.dialogVisible = false
+              this.getProductsLists()
+            }
+          })
         } else {
           console.log('error submit!!');
           return false;
@@ -417,7 +429,9 @@ export default {
     chooseImg(e) {
       this.imgFile = e.target.value
     },
+    // 新增上传图片
     uploadImg(){
+      let _this = this
       let formData  = new FormData(this.$refs.imgForm);
       console.log(this.imgFile)
       if (!this.imgFile) {
@@ -427,9 +441,14 @@ export default {
       this.$http.post('/api/manage/product/upload.do',formData).then(response => {
         let res= response.data
         if(res.status == 0) {
-          this.form.subImages.push(res.data)
+          _this.form.subImages.push(res.data)
         }
       })
+    },
+    // 删除图片
+    deleteImg(index) {
+      console.log(index)
+      this.form.subImages.splice(index,1)
     }
   }
 }
@@ -447,7 +466,28 @@ export default {
    height: 570px;
    overflow: auto;
  }
- .detail image,.img {
+ .detail img, .img {
    max-width: 100%;
+ }
+ .item-img{
+   position: relative;
+   width: 100px;
+   display: inline-block;
+   margin-right: 10px;
+  i{
+    position: absolute;
+    font-size: 100px;
+    top: 0;
+    left: 0;
+    color: #ddd;
+    z-index: -1;
+    opacity: 0;
+  }
+  &:hover {
+    i {
+      opacity: 1;
+      z-index: 10;
+    }
+  }
  }
 </style>
