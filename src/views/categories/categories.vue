@@ -34,6 +34,27 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog
+      title="新增品类"
+      :visible.sync="dialogVisible"
+      width="30%"
+      @close="closeDialog"
+      >
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="所属品类" v-if="type!='edit'">
+          <el-select v-model="form.parentId" placeholder="根节点">
+            <el-option v-for="item in firstCategory" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="品类名称">
+          <el-input v-model="form.categoryName"></el-input>
+        </el-form-item>
+         <el-form-item>
+          <el-button type="primary" @click="handleSure">确定</el-button>
+          <el-button @click="dialogVisible = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -43,7 +64,13 @@ export default {
   data() {
     return {
       loading: false,
-      firstCategory: []
+      firstCategory: [],
+      dialogVisible: false,
+      type:'',
+      form: {
+        parentId: '',
+        categoryName: ''
+      }
     }
   },
   created() {
@@ -76,7 +103,37 @@ export default {
     },
     // 点击新增品类
     handleAdd() {
-
+      this.dialogVisible = true
+      this.type = 'add'
+    },
+    // 修改名称
+    handleEdit(index,row) {
+      console.log(row)
+      this.type = 'edit'
+      this.form.categoryName = row.name
+      this.form.categoryId = row.id
+      this.dialogVisible = true
+    },
+    handleSure() {
+      let url = this.type =='add'? '/api/manage/category/add_category.do':'/api/manage/category/set_category_name.do'
+      this.$http.get(url,{
+        params: this.form
+      }).then(response => {
+        let res = response.data 
+        // let type = res.status==0?'success':'error'
+        if(res.status == 0) {
+          this.$message.success(res.data)
+        } else {
+          this.$message.error(res.data)
+        }
+        this.dialogVisible = false
+        this.getCategory()
+      })
+    },
+    closeDialog() {
+      for(let key in this.form) {
+        this.form[key] = ''
+      }
     }
   }
 }
