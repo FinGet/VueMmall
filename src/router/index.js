@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login/login.vue'
-
+import store from '../store/index.js'
 const Home = () => import(/* webpackChunkName: "home" */ '@/views/home/home.vue')
 const Index = () => import(/* webpackChunkName: "index" */ '@/views/index/index.vue')
 const Product = () => import(/* webpackChunkName: "product" */ '@/views/product/product.vue')
@@ -9,10 +9,11 @@ const Products = () => import(/* webpackChunkName: "products" */ '@/views/produc
 const Category = () => import(/* webpackChunkName: "category" */ '@/views/categories/categories.vue')
 const Order = () => import(/* webpackChunkName: "order" */ '@/views/order/order.vue')
 const Users = () => import(/* webpackChunkName: "user" */ '@/views/users/users.vue')
+const Vuex = () => import(/* webpackChunkName: "vuex" */ '@/views/vuex/vuex.vue')
 
 
 Vue.use(Router)
-
+console.log(store)
 export default new Router({
   mode:'history',
   routes: [
@@ -66,6 +67,11 @@ export default new Router({
           meta: {breadName:'用户管理'}
         }
       ]
+    },
+    {
+      path: '/vuex',
+      name: 'vuex',
+      component: Vuex
     }
   ]
 })

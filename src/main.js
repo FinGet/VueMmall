@@ -14,6 +14,7 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import store from './store/index.js'
 /**
  * 挂载全局组件
  */
@@ -51,6 +52,7 @@ axios.interceptors.response.use(
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'
